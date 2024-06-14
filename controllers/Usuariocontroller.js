@@ -1,4 +1,5 @@
 import { db } from "../db/conexion.js";
+import  jwt  from "jsonwebtoken";
 
 const Registro = async (req, res)=>{
     try{
@@ -36,7 +37,13 @@ const Verificar = async (req, res)=>{
         if(result.length === 0){
             res.status(404).json({mensaje:"credenciales invalidas"})
         }else{
-            res.status(200).json({mensaje:"autenticacion exitosa", info_user:result})
+        
+               const payload = result[0];
+               const token = jwt.sign(payload,'secret',{expiresIn: '5h' });
+
+
+
+            res.status(200).json({mensaje:"autenticacion exitosa", info_user:token})
         }
     }catch(err){
        res.status(500).json({mesaje:"Error de autenticacion", err: err.message})
